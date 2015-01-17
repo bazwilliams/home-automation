@@ -69,9 +69,63 @@ function play(playlistName) {
     }
 }
 
+function volumeUp(callback) {
+    if (currentRequest) {
+        console.log('Aborting previous request');
+        currentRequest.abort();
+    }
+    console.log('Volume Up');
+    var options = {
+        hostname: config.hostname,
+        port: config.port,
+        path: config.uriRoot + 'volume-up',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    currentRequest = http.request(options, function statusChecker(res) { 
+        if (res.statusCode !== 200) {
+            callback(new Error(res.statusCode));
+        } else {
+            callback(); 
+        }
+    });
+    currentRequest.on('error', callback);
+    currentRequest.end();
+}
+
+function volumeDown(callback) {
+    if (currentRequest) {
+        console.log('Aborting previous request');
+        currentRequest.abort();
+    }
+    console.log('Volume Down');
+    var options = {
+        hostname: config.hostname,
+        port: config.port,
+        path: config.uriRoot + 'volume-down',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    currentRequest = http.request(options, function statusChecker(res) { 
+        if (res.statusCode !== 200) {
+            callback(new Error(res.statusCode));
+        } else {
+            callback(); 
+        }
+    });
+    currentRequest.on('error', callback);
+    currentRequest.end();
+}
+
 exports.actions = {
     'GroupOff': toggleStandbyOrRadio,
     'Mood1': play(config.playlist1),
     'Mood2': play(config.playlist2),
-    'Mood3': play(config.playlist3)
+    'Mood3': play(config.playlist3),
+    'Off': volumeDown,
+    'On': volumeUp
 }
