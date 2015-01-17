@@ -1,0 +1,3 @@
+[submodule "node-rfxcom"]
+	path = node-rfxcom
+	url = https://github.com/bigkevmcd/node-rfxcom.git

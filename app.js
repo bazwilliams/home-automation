@@ -1,5 +1,5 @@
 var config = require('./config.js'),
-    rfxcom = require('./lib/node-rfxcom/');
+    rfxcom = require('./node-rfxcom/');
     rfxtrx = new rfxcom.RfxCom(config.serialPort, {debug: false}),
     lightwaverf = new rfxcom.Lighting5(rfxtrx, rfxcom.lighting5.LIGHTWAVERF),
     bathroomSwitch = require('./bathroom.js');
