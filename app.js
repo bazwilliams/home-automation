@@ -10,11 +10,13 @@ rfxtrx.initialise(function () {
 
 rfxtrx.on("lighting5", function (evt) {
     console.log('Bathroom Light ' + evt.command + ' pressed');
-    bathroomSwitch.actions[evt.command](function (err, result) {
-        if (err) {
-            console.error(err.stack);
-        } else {
-            console.log('Bathroom Light ' + evt.command + ' actioned');
-        }
-    });
+    if (bathroomSwitch.actions[evt.command]) {
+        bathroomSwitch.actions[evt.command](function (err, result) {
+            if (err) {
+                console.error(err.stack);
+            } else {
+                console.log('Bathroom Light ' + evt.command + ' actioned');
+            }
+        });
+    }
 });

@@ -69,21 +69,9 @@ function play(playlistName) {
     }
 }
 
-function lightOff(callback) {
-    console.log('LIGHT OFF');
-    callback();
-}
-
-function lightOn(callback) {
-    console.log('LIGHT ON');
-    callback();
-}
-
 exports.actions = {
     'GroupOff': toggleStandbyOrRadio,
     'Mood1': play(config.playlist1),
     'Mood2': play(config.playlist2),
-    'Mood3': play(config.playlist3),
-    'Mood4': lightOff,
-    'Mood5': lightOn
+    'Mood3': play(config.playlist3)
 }
