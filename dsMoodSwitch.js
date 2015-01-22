@@ -3,6 +3,15 @@ var responseParsers = require('./responseparsers.js');
 var config = require('./config.js');
 var currentRequest;
 
+function statusChecker(callback) {
+    return function responseHandler(res) {
+        if (res.statusCode >= 400) {
+            callback(new Error(res.statusCode));
+        } else {
+            callback(); 
+        }
+    }
+}
 function post(command, payload, responseHandler) {
     if (currentRequest) {
         currentRequest.abort();
@@ -23,8 +32,8 @@ function post(command, payload, responseHandler) {
     currentRequest.end(buffer);
     return currentRequest;
 }
-
 function toggleStandbyOrRadio(callback) {
+    console.log('toggle standby');
     post('toggle-standby', {}, function playRadioIfNotInStandby(res) {
         if (res.statusCode !== 200) {
             callback(new Error(res.statusCode));
@@ -43,40 +52,18 @@ function toggleStandbyOrRadio(callback) {
         }
     }).on('error', callback);
 }
-
 function play(playlistName) {
     return function setupPlay(callback) {
-        console.log('Preparing ' + playlistName || "");
-        post('play', { playlistName: playlistName }, function statusChecker(res) { 
-            if (res.statusCode !== 200) {
-                callback(new Error(res.statusCode));
-            } else {
-                callback(); 
-            }
-        }).on('error', callback);
+        console.log('play ' + (playlistName || 'radio'));
+        post('play', { playlistName: playlistName, shuffle: true }, statusChecker(callback)).on('error', callback);
     }
 }
-
 function volumeUp(callback) {
-    post('volume-up', {}, function statusChecker(res) { 
-        if (res.statusCode !== 200) {
-            callback(new Error(res.statusCode));
-        } else {
-            callback(); 
-        }
-    }).on('error', callback);
+    post('volume-up', { increment: 4 }, statusChecker(callback)).on('error', callback);
 }
-
 function volumeDown(callback) {
-    post('volume-down', {}, function statusChecker(res) {
-        if (res.statusCode !== 200) {
-            callback(new Error(res.statusCode));
-        } else {
-            callback(); 
-        }
-    }).on('error', callback);
+    post('volume-down', { decrement: 1 }, statusChecker(callback)).on('error', callback);
 }
-
 exports.actions = {
     'GroupOff': toggleStandbyOrRadio,
     'Mood1': play(config.playlist1),
