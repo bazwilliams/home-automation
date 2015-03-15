@@ -1,5 +1,5 @@
 var config = require('./config.js'),
-    rfxcom = require('./node-rfxcom/');
+    rfxcom = require('rfxcom');
     rfxtrx = new rfxcom.RfxCom(config.serialPort, {debug: false}),
     lightwaverf = new rfxcom.Lighting5(rfxtrx, rfxcom.lighting5.LIGHTWAVERF),
     dsMoodSwitch = require('./dsMoodSwitch.js');
