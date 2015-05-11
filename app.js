@@ -1,16 +1,17 @@
 var config = require('./config.js'),
-    rfxcom = require('rfxcom');
+    rfxcom = require('rfxcom'),
     rfxtrx = new rfxcom.RfxCom(config.serialPort, {debug: false}),
     lightwaverf = new rfxcom.Lighting5(rfxtrx, rfxcom.lighting5.LIGHTWAVERF),
-    dsMoodSwitch = require('./dsMoodSwitch.js');
+    dsMoodSwitch = require('./dsMoodSwitch.js'),
+    _ = require('underscore');
 
 rfxtrx.initialise(function () {
-    // lightwaverf.switchOn("0xFFFFFF/1");
 });
 
 rfxtrx.on("lighting5", function (evt) {
+    var switchConfig = _.findWhere(config.switches, { id : evt.id });
     if (dsMoodSwitch.actions[evt.command]) {
-        dsMoodSwitch.actions[evt.command](function (err, result) {
+        dsMoodSwitch.actions[evt.command](switchConfig, function (err, result) {
             if (err) {
                 console.error(err.stack);
             }

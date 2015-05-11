@@ -12,7 +12,7 @@ function statusChecker(callback) {
         }
     }
 }
-function post(command, payload, responseHandler) {
+function post(uriRoot, command, payload, responseHandler) {
     if (currentRequest) {
         currentRequest.abort();
     }
@@ -20,7 +20,7 @@ function post(command, payload, responseHandler) {
     var options = {
         hostname: config.hostname,
         port: config.port,
-        path: config.uriRoot + command,
+        path: uriRoot + command,
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -32,9 +32,9 @@ function post(command, payload, responseHandler) {
     currentRequest.end(buffer);
     return currentRequest;
 }
-function toggleStandbyOrRadio(callback) {
-    console.log('toggle standby');
-    post('toggle-standby', {}, function playRadioIfNotInStandby(res) {
+function toggleStandbyOrRadio(switchConfig, callback) {
+    console.log(switchConfig.name + '/toggle standby');
+    post(switchConfig.uriRoot, 'toggle-standby', {}, function playRadioIfNotInStandby(res) {
         if (res.statusCode !== 200) {
             callback(new Error(res.statusCode));
         } else {
@@ -43,7 +43,7 @@ function toggleStandbyOrRadio(callback) {
                     callback(err);
                 } else {
                     if (results.standbyState === 0) {
-                        play()(callback);
+                        play()(switchConfig, callback);
                     } else {
                         callback();
                     }
@@ -52,23 +52,24 @@ function toggleStandbyOrRadio(callback) {
         }
     }).on('error', callback);
 }
-function play(playlistName) {
-    return function setupPlay(callback) {
-        console.log('play ' + (playlistName || 'radio'));
-        post('play', { playlistName: playlistName, shuffle: true }, statusChecker(callback)).on('error', callback);
+function play(playlistId) {
+    return function setupPlay(switchConfig, callback) {
+	var playlistName = switchConfig[playlistId];
+        console.log(switchConfig.name + '/play ' + (playlistName || 'radio'));
+        post(switchConfig.uriRoot, 'play', { playlistName: playlistName, shuffle: true }, statusChecker(callback)).on('error', callback);
     }
 }
-function volumeUp(callback) {
-    post('volume-up', { increment: 4 }, statusChecker(callback)).on('error', callback);
+function volumeUp(switchConfig, callback) {
+    post(switchConfig.uriRoot, 'volume-up', { increment: 4 }, statusChecker(callback)).on('error', callback);
 }
-function volumeDown(callback) {
-    post('volume-down', { decrement: 1 }, statusChecker(callback)).on('error', callback);
+function volumeDown(switchConfig, callback) {
+    post(switchConfig.uriRoot, 'volume-down', { decrement: 1 }, statusChecker(callback)).on('error', callback);
 }
 exports.actions = {
     'GroupOff': toggleStandbyOrRadio,
-    'Mood1': play(config.playlist1),
-    'Mood2': play(config.playlist2),
-    'Mood3': play(config.playlist3),
+    'Mood1': play('playlist1'),
+    'Mood2': play('playlist2'),
+    'Mood3': play('playlist3'),
     'Off': volumeDown,
     'On': volumeUp
 }
