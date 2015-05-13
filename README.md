@@ -17,13 +17,24 @@ After deciding which device to control, add the uriRoot below along with the ser
 
 ```javascript
 module.exports = {
-	serialPort: '/dev/ttyUSB0',
+    serialPort: '/dev/ttyUSB0',
     hostname: 'localhost',
     port: 18080,
-    uriRoot: '/api/devices/4c494e4e-0026-0f21-f15c-01373197013f/',
-    playlist1: 'Louise Chill',
-    playlist2: 'Barry 2014.2',
-    playlist3: 'Easy Listening Bucket'
+    switches: [{
+        name: 'Bathroom',
+        id: '0xF301B1',
+        uriRoot: '/api/devices/4c494e4e-0026-0f21-f15c-01373197013f/',
+        playlist1: 'Louise Relax',
+        playlist2: 'Barry Bathroom Megamix',
+        playlist3: 'Kids Bathtime'
+    },{
+        name: 'Kitchen',
+        id: '0xF2FA39',
+        uriRoot: '/api/devices/4c494e4e-0026-0f21-d74b-01333078013f/',
+        playlist1: 'Louise Relax',
+        playlist2: 'Easy Listening Bucket',
+        playlist3: 'Jazzy',
+    }]
 };
 ```
 
