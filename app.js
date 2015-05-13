@@ -10,6 +10,10 @@ rfxtrx.initialise(function () {
 
 rfxtrx.on("lighting5", function (evt) {
     var switchConfig = _.findWhere(config.switches, { id : evt.id });
+    if (!switchConfig) {
+	console.error('Could not find configuration for switch with id ' + evt.id);
+    }
+
     if (dsMoodSwitch.actions[evt.command]) {
         dsMoodSwitch.actions[evt.command](switchConfig, function (err, result) {
             if (err) {
