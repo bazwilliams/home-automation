@@ -13,7 +13,10 @@ Clone this repository onto your server and perform an `npm install` inside the n
 
 This project sends REST calls to another of my services https://github.com/bazwilliams/upnp-playlist-service which provides an API for adding playlists and changing the state of the DSs. This should also work with any Upnp device which has playlist support - Maybe Sonos? 
 
-After deciding which device to control, add the uriRoot below along with the serial port your RFXCom433 device is connected. Add the hostname and port where the upnp playlist service is running. Save all this in a `config.js` file in the root folder. 
+Set the serial port your RFXCom433 device is connected and the hostname and port where the upnp playlist service is running.
+Then run the service, if you press a button on any switches, an error message should be logged with a message including the id of the switch. You will need to include this id the configuration of each switch. After deciding which device to control, add the uriRoot (which can currently be found from the upnp-playlist-service) below along with the id of the switch, friendly name of the switch and playlist configurations. 
+
+Save all this in a `config.js` file in the root folder. An multi switch example follows. 
 
 ```javascript
 module.exports = {
