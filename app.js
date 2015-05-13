@@ -14,7 +14,7 @@ rfxtrx.on("lighting5", function (evt) {
 	console.error('Could not find configuration for switch with id ' + evt.id);
     }
 
-    if (dsMoodSwitch.actions[evt.command]) {
+    if (switchConfig && dsMoodSwitch.actions[evt.command]) {
         dsMoodSwitch.actions[evt.command](switchConfig, function (err, result) {
             if (err) {
                 console.error(err.stack);
